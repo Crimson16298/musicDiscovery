@@ -66,9 +66,11 @@ def generateRandomString(length):
     values = os.urandom(length)
     return "".join(possible[x % len(possible)] for x in values)
 
-#
-
-
+def sha256(codeString):
+    data = codeString.encode("utf-8")
+    hash_object = hashlib.sha256(data)
+    hex_dig = hash_object.hexdigest()
+    return hex_dig.digest()
     
 def search_for_artist(token, userInput):
     url = "https://api.spotify.com/v1/search"
@@ -98,5 +100,7 @@ def search_for_artist(token, userInput):
 token = get_token()
 tracks = search_for_artist(token, artistName)
 codeVerifier = generateRandomString(64)
+hashed = sha256(codeVerifier)
+code_challenge = base64.urlsafe_b64encode(hashed).decode("utf-8").rstrip("=")
 
-print(tracks)
+print(tracks)   
